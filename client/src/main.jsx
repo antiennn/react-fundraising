@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { ChainId, ThirdwebProvider } from '@thirdweb-dev/react';
-
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { StateContextProvider } from './context';
 import App from './App';
 import './index.css';
@@ -14,6 +14,7 @@ root.render(
     <Router>
       <StateContextProvider>
         <App />
+        <SpeedInsights />
       </StateContextProvider>
     </Router>
   </ThirdwebProvider> 
