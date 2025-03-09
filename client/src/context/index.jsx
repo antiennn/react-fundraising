@@ -2,6 +2,9 @@ import React, { useContext, createContext } from 'react';
 
 import { useAddress, useContract, useMetamask, useContractWrite } from '@thirdweb-dev/react';
 import { ethers } from 'ethers';
+import axios from "axios";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 import { EditionMetadataWithOwnerOutputSchema } from '@thirdweb-dev/sdk';
 
 const StateContext = createContext();
@@ -80,6 +83,52 @@ export const StateContextProvider = ({ children }) => {
     return parsedDonations;
   }
 
+  const getCommentCompaign = async (postID, lastCreatedAt) =>{
+    
+    let url = import.meta.env.VITE_API_URL + `/comments/${postID}`
+    if(lastCreatedAt){
+      url += `?last_created_at=${lastCreatedAt}`
+    }    
+    try {
+      const response = await axios.get(url);
+      return response.data;
+    } catch (error) {
+      toast.error("Error fetching data!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      console.log(error);
+      
+      return []
+    }
+  }
+
+  const sendCommentCompaign = async (comment) =>{
+    const url = import.meta.env.VITE_API_URL + `/comments/`
+    try {
+      const response = await axios.post(url, JSON.stringify(comment));
+      return response;
+    } catch (error) {
+      toast.error("Error send comment!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      console.log(error);
+      
+      return []
+    }
+  }
+
 
   return (
     <StateContext.Provider
@@ -91,7 +140,9 @@ export const StateContextProvider = ({ children }) => {
         getCampaigns,
         getUserCampaigns,
         donate,
-        getDonations
+        getDonations,
+        getCommentCompaign,
+        sendCommentCompaign
       }}
     >
       {children}
